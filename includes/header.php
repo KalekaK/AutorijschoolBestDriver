@@ -1,7 +1,12 @@
 <?php
+/*
+Naam: Adrian
+Versie: 1.0
+Datum: 08-04-2026
+Beschrijving: Algemene header met basis HTML, Bootstrap en navigatie.
+*/
 
 $titel = $pageTitle ?? 'Best Driver';
-
 ?>
 <!DOCTYPE html>
 <html lang="nl">
