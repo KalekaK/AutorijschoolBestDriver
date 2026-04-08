@@ -54,3 +54,4 @@ class Ziekmelding {
         return $stmt->fetchAll();
     }
 }
+
