@@ -28,4 +28,31 @@ body {
  
 .main-content { flex: 1; padding: 1.5rem; }
  
- 
+ /* Dashboard kaarten */
+.dashboard-card {
+    background: #fff; border-radius: 8px;
+    padding: 1.5rem; border: 1px solid #dee2e6;
+    transition: box-shadow .2s;
+}
+.dashboard-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+
+/* Tabellen */
+.table-bestdriver thead th {
+    background-color: var(--bd-blauw);
+    color: #fff; font-weight: 500; font-size: .875rem;
+}
+
+/* Login */
+.login-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1565C0, #1976D2);
+    display: flex; align-items: center; justify-content: center;
+}
+.login-card {
+    background: #fff; border-radius: 12px;
+    padding: 2.5rem; width: 100%; max-width: 420px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.15);
+}
+.login-logo { font-size: 2rem; font-weight: 700; color: var(--bd-blauw); }
+
+footer { margin-top: auto; }
