@@ -1,4 +1,6 @@
 <?php
+
+
 /*
 Naam: Adrian
 Versie: 1.1
@@ -11,28 +13,40 @@ require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Gebruiker.php';
 require_once __DIR__ . '/../includes/auth.php';
 
+// Als je al ben ingelogd direct naar dashboard
 if (Auth::isLoggedIn()) {
     header('Location: ' . BASE_URL . '/pages/dashboard.php');
     exit;
 }
 
 $fout = '';
+$gebruikersnaam = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gebruikersnaam = trim($_POST['gebruikersnaam'] ?? '');
     $wachtwoord     = $_POST['wachtwoord'] ?? '';
 
-    if ($gebruikersnaam !== '' && (!preg_match('/^[a-zA-Z0-9_]+$/', $gebruikersnaam) || strlen($gebruikersnaam) < 4 || strlen($gebruikersnaam) > 20)) {
-        $fout = 'Gebruikersnaam moet 4 t/m 20 tekens zijn en mag alleen letters, cijfers en _ bevatten.';
+    // Basiscontrole als alle velden zijn ingevuld
+    if ($gebruikersnaam === '' || $wachtwoord === '') {
+        $fout = 'Vul alle velden in.';
     }
 
-    if (!$fout && $gebruikersnaam && $wachtwoord) {
-        if (strlen($wachtwoord) < 6 || strlen($wachtwoord) > 50) {
-            $fout = 'Wachtwoord moet 6 t/m 50 tekens zijn.';
-        }
+    // Gebruikersnaam validatie
+    if (!$fout && !preg_match('/^[a-zA-Z0-9_]+$/', $gebruikersnaam)) {
+        $fout = 'Gebruikersnaam mag alleen letters, cijfers en _ bevatten.';
     }
 
-    if (!$fout && $gebruikersnaam && $wachtwoord) {
+    if (!$fout && (strlen($gebruikersnaam) < 4 || strlen($gebruikersnaam) > 20)) {
+        $fout = 'Gebruikersnaam moet tussen 4 en 20 tekens zijn.';
+    }
+
+    // Wachtwoord validatie
+    if (!$fout && (strlen($wachtwoord) < 6 || strlen($wachtwoord) > 50)) {
+        $fout = 'Wachtwoord moet tussen 6 en 50 tekens zijn.';
+    }
+
+    // Inloggen met checks
+    if (!$fout) {
         $gebruikerModel = new Gebruiker();
         $gebruiker      = $gebruikerModel->getByGebruikersnaam($gebruikersnaam);
 
@@ -42,10 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         } else {
             $fout = 'Onjuiste gebruikersnaam of wachtwoord.';
-        }
-    } else {
-        if (!$fout) {
-            $fout = 'Vul alle velden in.';
         }
     }
 }
@@ -76,19 +86,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST">
             <div class="mb-3">
                 <label class="form-label fw-semibold">Gebruikersnaam</label>
-                <div class="input-group">
-                    <input type="text" name="gebruikersnaam" class="form-control"
-                           placeholder="Gebruikersnaam" required autofocus
-                           value="<?= htmlspecialchars($gebruikersnaam ?? '') ?>">
-                </div>
+                <input
+                    type="text"
+                    name="gebruikersnaam"
+                    class="form-control"
+                    placeholder="Gebruikersnaam"
+                    required
+                    autofocus
+                    value="<?= htmlspecialchars($gebruikersnaam) ?>"
+                >
             </div>
+
             <div class="mb-4">
                 <label class="form-label fw-semibold">Wachtwoord</label>
-                <div class="input-group">
-                    <input type="password" name="wachtwoord" class="form-control"
-                           placeholder="Wachtwoord" required>
-                </div>
+                <input
+                    type="password"
+                    name="wachtwoord"
+                    class="form-control"
+                    placeholder="Wachtwoord"
+                    required
+                >
             </div>
+
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary py-2 fw-semibold">
                     Inloggen
