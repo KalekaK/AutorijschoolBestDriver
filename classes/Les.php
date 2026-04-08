@@ -1,7 +1,7 @@
 <?php
 /*
-Naam: Krishna Sardarsing
-Versie: 1.3
+Naam: Dominik Bulla
+Versie: 1.1
 Datum: 08-04-2026
 Beschrijving: Simpele class voor lessen (overzichten en plannen).
 */
@@ -12,7 +12,7 @@ class Les {
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
-// Alle lessen ophalen, inclusief instructeurnaam, klantnaam, ophaallocatie en lespakketnaam
+
     public function getAll(string $zoek = ''): array {
         $sql = "SELECT l.*,
             CONCAT(gi.Voornaam,' ',gi.Achternaam) AS instructeur_naam,
@@ -29,13 +29,14 @@ class Les {
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
-// Lessen ophalen op basis van lespakkettype, instructeur of klant
+
     public function getByLespakketType(int $lespakketTypeId): array {
         $stmt = $this->pdo->prepare(
             "SELECT l.*,
              CONCAT(gi.Voornaam,' ',gi.Achternaam) AS instructeur_naam,
              CONCAT(gk.Voornaam,' ',gk.Achternaam) AS klant_naam,
              o.Adres AS ophaallocatie,
+             CONCAT(a.Kenteken,' - ',a.Merk,' ',a.Model) AS auto,
              lp.Naam AS lespakket_naam
              FROM les l
              LEFT JOIN gebruiker gi ON gi.Gebruiker_id = l.Instructeur_id
@@ -43,13 +44,14 @@ class Les {
              LEFT JOIN gebruiker gk ON gk.Gebruiker_id = glp.GebruikerGebruiker_id AND gk.Rol = 3
              LEFT JOIN lespakket lp ON lp.Lespakket_id = glp.LespakketLespakket_id
              LEFT JOIN ophaallocatie o ON o.Ophaallocatie_id = l.OphaallocatieOphaallocatie_id
+             LEFT JOIN auto a ON a.Auto_id = l.AutoAuto_id
              WHERE glp.LespakketLespakket_id = ?
              ORDER BY l.Lestijd DESC"
         );
         $stmt->execute([$lespakketTypeId]);
         return $stmt->fetchAll();
     }
-// Lessen ophalen op basis van instructeur of klant
+
     public function getByInstructeur(int $instructeurId): array {
         $stmt = $this->pdo->prepare(
             "SELECT l.*,
@@ -67,7 +69,7 @@ class Les {
         $stmt->execute([$instructeurId]);
         return $stmt->fetchAll();
     }
-// Lessen ophalen op basis van klant
+
     public function getByKlant(int $klantId): array {
         $stmt = $this->pdo->prepare(
             "SELECT l.*,
@@ -85,7 +87,7 @@ class Les {
         $stmt->execute([$klantId]);
         return $stmt->fetchAll();
     }
-// Hulpmethode om een gebruiker-lespakket te krijgen of aan te maken
+
     private function getOfMaakGebruikerLespakketId(int $klantId, int $lespakketTypeId): int {
         $stmt = $this->pdo->prepare(
             "SELECT Gebruiker_Lespakket_id
@@ -109,7 +111,7 @@ class Les {
 
         return (int)$this->pdo->lastInsertId();
     }
-// Nieuwe les toevoegen, met validatie van de invoer
+
     public function toevoegen(array $data): bool {
         $klantId = (int)($data['klant_id'] ?? 0);
         $lespakketTypeId = (int)($data['lespakket_id'] ?? 0);
@@ -141,14 +143,14 @@ class Les {
             $data['auto_id'],
         ]);
     }
-// Les annuleren met een reden
+
     public function annuleren(int $lesId, string $reden): bool {
         $stmt = $this->pdo->prepare(
             "UPDATE les SET Geannuleerd = 1, RedenAnnuleren = ? WHERE Les_id = ?"
         );
         return $stmt->execute([$reden, $lesId]);
     }
-// Les verwijderen op ID
+
     public function verwijderen(int $lesId): bool {
         $stmt = $this->pdo->prepare("DELETE FROM les WHERE Les_id = ?");
         return $stmt->execute([$lesId]);

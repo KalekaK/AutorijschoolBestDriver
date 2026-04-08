@@ -3,16 +3,16 @@
 Naam: Krishna Sardarsing
 Versie: 1.2
 Datum: 08-04-2026
-Beschrijving: Simpele class om auto’s (in de wagenpark) te beheren.
+Beschrijving: Simpele class om auto’s (wagenpark) te beheren.
 */
 
 class Auto {
     private PDO $pdo;
-// Database connectie wordt opgehaald via de Database class
+
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
-// Alle auto's ophalen, voor kenteken, merk en model
+
     public function getAll(string $zoek = ''): array {
         if ($zoek !== '') {
             $stmt = $this->pdo->prepare(
@@ -34,7 +34,7 @@ class Auto {
         );
         return $stmt->fetchAll();
     }
-// Auto ophalen op ID, inclusief de soortnaam
+
     public function getById(int $id): array|false {
         $stmt = $this->pdo->prepare(
             "SELECT a.*, s.Type AS soort
@@ -50,7 +50,7 @@ class Auto {
         $stmt = $this->pdo->query("SELECT * FROM soort ORDER BY Type");
         return $stmt->fetchAll();
     }
-// Nieuwe auto toevoegen, met validatie van de invoer
+
     public function toevoegen(array $data): bool {
         $merk = trim($data['merk'] ?? '');
         $model = trim($data['model'] ?? '');
@@ -66,7 +66,7 @@ class Auto {
         );
         return $stmt->execute([$merk, $model, $kenteken, $soortId]);
     }
-// Bestaande auto bijwerken, met validatie van de invoer
+
     public function bijwerken(int $id, array $data): bool {
         $merk = trim($data['merk'] ?? '');
         $model = trim($data['model'] ?? '');
@@ -76,12 +76,13 @@ class Auto {
         if ($kenteken === '' || $merk === '' || $model === '' || $soortId < 1) {
             return false;
         }
-// Controleren of de auto bestaat
+
         $stmt = $this->pdo->prepare(
             "UPDATE auto SET Merk = ?, Model = ?, Kenteken = ?, SoortSoort_id = ? WHERE Auto_id = ?"
         );
         return $stmt->execute([$merk, $model, $kenteken, $soortId, $id]);
     }
+
     public function verwijderen(int $id): bool {
         $stmt = $this->pdo->prepare("DELETE FROM auto WHERE Auto_id = ?");
         return $stmt->execute([$id]);
