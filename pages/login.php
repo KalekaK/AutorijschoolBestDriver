@@ -1,4 +1,13 @@
 <?php
+
+
+/*
+Naam: Adrian
+Versie: 1.1
+Datum: 08-04-2026
+Beschrijving: Inlogpagina met simpele validatie en duidelijke foutmeldingen.
+*/
+
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Gebruiker.php';

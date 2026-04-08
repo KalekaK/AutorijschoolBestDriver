@@ -1,11 +1,10 @@
 <?php
 
-
 /*
 Naam: Adrian
 Versie: 1.1
 Datum: 08-04-2026
-Beschrijving: Gebruiker class voor klanten/instructeurs (CRUD en inloggen).
+Beschrijving: Admin lespakketten (CRUD eenvoudig).
 */
 
 $pageTitle = 'Lespakketten';
