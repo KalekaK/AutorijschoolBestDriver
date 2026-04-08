@@ -125,7 +125,16 @@ include __DIR__ . '/../../includes/header.php';
 					<td><?= htmlspecialchars($a['Model']) ?></td>
 					<td><?= htmlspecialchars($a['soort'] ?? '') ?></td>
 					<td class="text-end">
-						<button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#bewerkenModal<?= (int)$a['Auto_id'] ?>">
+						<button
+							class="btn btn-sm btn-outline-secondary"
+							data-bs-toggle="modal"
+							data-bs-target="#autoBewerkenModal"
+							data-auto-id="<?= (int)$a['Auto_id'] ?>"
+							data-kenteken="<?= htmlspecialchars((string)$a['Kenteken'], ENT_QUOTES) ?>"
+							data-merk="<?= htmlspecialchars((string)$a['Merk'], ENT_QUOTES) ?>"
+							data-model="<?= htmlspecialchars((string)$a['Model'], ENT_QUOTES) ?>"
+							data-soort-id="<?= (int)($a['SoortSoort_id'] ?? 0) ?>"
+						>
 							Bewerken
 						</button>
 						<form method="POST" class="d-inline">
@@ -135,49 +144,6 @@ include __DIR__ . '/../../includes/header.php';
 						</form>
 					</td>
 				</tr>
-
-				<div class="modal fade" id="bewerkenModal<?= (int)$a['Auto_id'] ?>" tabindex="-1">
-					<div class="modal-dialog">
-						<form method="POST" class="modal-content" id="autoForm<?= (int)$a['Auto_id'] ?>">
-							<input type="hidden" name="actie" value="bewerken">
-							<input type="hidden" name="id" value="<?= (int)$a['Auto_id'] ?>">
-							<div class="modal-header">
-								<h5 class="modal-title">Auto bewerken</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-							</div>
-							<div class="modal-body">
-								<div class="mb-3">
-									<label class="form-label">Kenteken *</label>
-									<input type="text" name="kenteken" class="form-control" required maxlength="20" value="<?= htmlspecialchars($a['Kenteken']) ?>">
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Merk *</label>
-									<input type="text" name="merk" class="form-control" required maxlength="255" value="<?= htmlspecialchars($a['Merk']) ?>">
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Model *</label>
-									<input type="text" name="model" class="form-control" required maxlength="255" value="<?= htmlspecialchars($a['Model']) ?>">
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Soort *</label>
-									<select name="soort_id" class="form-select" required>
-										<option value="">Kies...</option>
-										<?php foreach ($soorten as $s): ?>
-											<option value="<?= (int)$s['Soort_id'] ?>" <?= (int)$a['SoortSoort_id'] === (int)$s['Soort_id'] ? 'selected' : '' ?>>
-												<?= htmlspecialchars($s['Type']) ?>
-											</option>
-										<?php endforeach; ?>
-									</select>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-								<button type="submit" class="btn btn-primary">Opslaan</button>
-							</div>
-						</form>
-					</div>
-				</div>
-
 			<?php endforeach; endif; ?>
 			</tbody>
 		</table>
@@ -185,6 +151,46 @@ include __DIR__ . '/../../includes/header.php';
 	</div>
 </main>
 </div>
+</div>
+
+<div class="modal fade" id="autoBewerkenModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<form method="POST" class="modal-content" id="autoBewerkenForm">
+			<input type="hidden" name="actie" value="bewerken">
+			<input type="hidden" name="id" id="auto_bewerken_id" value="">
+			<div class="modal-header">
+				<h5 class="modal-title">Auto bewerken</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sluiten"></button>
+			</div>
+			<div class="modal-body">
+				<div class="mb-3">
+					<label class="form-label">Kenteken *</label>
+					<input type="text" name="kenteken" id="auto_bewerken_kenteken" class="form-control" required maxlength="20">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Merk *</label>
+					<input type="text" name="merk" id="auto_bewerken_merk" class="form-control" required maxlength="255">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Model *</label>
+					<input type="text" name="model" id="auto_bewerken_model" class="form-control" required maxlength="255">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Soort *</label>
+					<select name="soort_id" id="auto_bewerken_soort" class="form-select" required>
+						<option value="">Kies...</option>
+						<?php foreach ($soorten as $s): ?>
+							<option value="<?= (int)$s['Soort_id'] ?>"><?= htmlspecialchars($s['Type']) ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+				<button type="submit" class="btn btn-primary">Opslaan</button>
+			</div>
+		</form>
+	</div>
 </div>
 
 <div class="modal fade" id="autoModal" tabindex="-1">
@@ -237,6 +243,26 @@ include __DIR__ . '/../../includes/header.php';
 			alert('Vul een kenteken in.');
 			e.preventDefault();
 		}
+	});
+})();
+
+(function(){
+	var idInput = document.getElementById('auto_bewerken_id');
+	var kentekenInput = document.getElementById('auto_bewerken_kenteken');
+	var merkInput = document.getElementById('auto_bewerken_merk');
+	var modelInput = document.getElementById('auto_bewerken_model');
+	var soortSelect = document.getElementById('auto_bewerken_soort');
+	if(!idInput || !kentekenInput || !merkInput || !modelInput || !soortSelect) return;
+
+	document.addEventListener('click', function(e){
+		var btn = e.target.closest('[data-auto-id]');
+		if(!btn) return;
+		idInput.value = btn.getAttribute('data-auto-id') || '';
+		kentekenInput.value = btn.getAttribute('data-kenteken') || '';
+		merkInput.value = btn.getAttribute('data-merk') || '';
+		modelInput.value = btn.getAttribute('data-model') || '';
+		soortSelect.value = btn.getAttribute('data-soort-id') || '';
+		setTimeout(function(){ kentekenInput.focus(); }, 150);
 	});
 })();
 </script>
