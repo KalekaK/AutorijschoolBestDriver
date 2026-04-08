@@ -16,7 +16,7 @@ class Gebruiker
         $this->pdo = Database::getInstance();
     }
 
-    // 1 gebruiker ophalen op ID
+    // 1. Eén gebruiker ophalen op ID
     public function getById(int $id): array|false
     {
         $stmt = $this->pdo->prepare(
@@ -26,89 +26,94 @@ class Gebruiker
         return $stmt->fetch();
     }
 
-    // 1 actieve gebruiker ophalen op gebruikersnaam
+    // 2. Eén gebruiker ophalen op gebruikersnaam (alleen actieve)
     public function getByGebruikersnaam(string $gebruikersnaam): array|false
     {
         $stmt = $this->pdo->prepare(
-            "SELECT * FROM gebruiker WHERE Gebruikersnaam = ? AND Actief = 1"
+            "SELECT * FROM gebruiker 
+             WHERE Gebruikersnaam = ? AND Actief = 1"
         );
         $stmt->execute([$gebruikersnaam]);
         return $stmt->fetch();
     }
 
-    // Bestaat deze gebruikersnaam al? (excludeId = uitzondering bij bewerken)
-    public function bestaatGebruikersnaam(string $gebruikersnaam, int $excludeId = 0): bool
+    // 3. Bestaat deze gebruikersnaam al?
+    public function bestaatGebruikersnaam(string $gebruikersnaam): bool
     {
-        if ($excludeId > 0) {
-            $stmt = $this->pdo->prepare(
-                "SELECT COUNT(*) FROM gebruiker
-                 WHERE Gebruikersnaam = ? AND Gebruiker_id <> ?"
-            );
-            $stmt->execute([$gebruikersnaam, $excludeId]);
-        } else {
-            $stmt = $this->pdo->prepare(
-                "SELECT COUNT(*) FROM gebruiker WHERE Gebruikersnaam = ?"
-            );
-            $stmt->execute([$gebruikersnaam]);
-        }
+        $stmt = $this->pdo->prepare(
+            "SELECT COUNT(*) FROM gebruiker WHERE Gebruikersnaam = ?"
+        );
+        $stmt->execute([$gebruikersnaam]);
         return (int)$stmt->fetchColumn() > 0;
     }
 
-    // Alle klanten (Rol = 3), optioneel zoeken
+    // 4. Alle klanten (Rol = 3), optioneel zoeken op naam
     public function getAlleKlanten(string $zoek = ''): array
     {
         if ($zoek !== '') {
             $stmt = $this->pdo->prepare(
                 "SELECT * FROM gebruiker
-                 WHERE Rol = 3 AND (Voornaam LIKE ? OR Achternaam LIKE ?)
+                 WHERE Rol = 3
+                 AND (Voornaam LIKE ? OR Achternaam LIKE ?)
                  ORDER BY Achternaam"
             );
             $stmt->execute(["%$zoek%", "%$zoek%"]);
         } else {
             $stmt = $this->pdo->query(
-                "SELECT * FROM gebruiker WHERE Rol = 3 ORDER BY Achternaam"
+                "SELECT * FROM gebruiker
+                 WHERE Rol = 3
+                 ORDER BY Achternaam"
             );
         }
+
         return $stmt->fetchAll();
     }
 
-    // Alle actieve instructeurs (Rol = 2)
+    // 5. Alle instructeurs (Rol = 2), alleen actieve
     public function getAlleInstructeurs(): array
     {
         $stmt = $this->pdo->query(
-            "SELECT * FROM gebruiker WHERE Rol = 2 AND Actief = 1 ORDER BY Achternaam"
+            "SELECT * FROM gebruiker
+             WHERE Rol = 2 AND Actief = 1
+             ORDER BY Achternaam"
         );
         return $stmt->fetchAll();
     }
 
-    // Alle instructeurs voor admin, optioneel zoeken
+    // 6. Instructeurs voor admin, met zoekfunctie
     public function getAlleInstructeursAdmin(string $zoek = ''): array
     {
         if ($zoek !== '') {
             $stmt = $this->pdo->prepare(
                 "SELECT * FROM gebruiker
-                 WHERE Rol = 2 AND (Voornaam LIKE ? OR Achternaam LIKE ? OR Gebruikersnaam LIKE ?)
+                 WHERE Rol = 2
+                 AND (Voornaam LIKE ? OR Achternaam LIKE ? OR Gebruikersnaam LIKE ?)
                  ORDER BY Achternaam"
             );
             $stmt->execute(["%$zoek%", "%$zoek%", "%$zoek%"]);
         } else {
             $stmt = $this->pdo->query(
-                "SELECT * FROM gebruiker WHERE Rol = 2 ORDER BY Achternaam"
+                "SELECT * FROM gebruiker
+                 WHERE Rol = 2
+                 ORDER BY Achternaam"
             );
         }
+
         return $stmt->fetchAll();
     }
 
-    // Nieuwe gebruiker toevoegen
+    // 7. Nieuwe gebruiker toevoegen
     public function toevoegen(array $data): bool
     {
         $stmt = $this->pdo->prepare(
             "INSERT INTO gebruiker
              (Gebruikersnaam, Wachtwoord, Voornaam, Tussenvoegsel, Achternaam,
               Rol, Examenformatie, Actief, Geslaagd,
-              Adres, Ophaaladres, Email, Telefoon, RegistratieDatum, Geboortedatum)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+              Adres, Ophaaladres, Email, Telefoon, RegistratieDatum)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
         );
+
+        $registratieDatum = $data['registratiedatum'] ?? date('Y-m-d');
 
         return $stmt->execute([
             $data['gebruikersnaam'],
@@ -124,22 +129,30 @@ class Gebruiker
             $data['ophaaladres'] ?? '',
             $data['email'] ?? '',
             $data['telefoon'] ?? '',
-            $data['registratiedatum'] ?? date('Y-m-d'),
-            $data['geboortedatum'] ?: null,
+            $registratieDatum,
         ]);
     }
 
-    // Bestaande gebruiker bijwerken
+    // 8. Gebruiker bijwerken
     public function bijwerken(int $id, array $data): bool
     {
         $stmt = $this->pdo->prepare(
             "UPDATE gebruiker
-             SET Voornaam = ?, Tussenvoegsel = ?, Achternaam = ?,
-                 Gebruikersnaam = ?, Actief = ?, Geslaagd = ?,
-                 Adres = ?, Ophaaladres = ?, Email = ?, Telefoon = ?,
-                 RegistratieDatum = ?, Geboortedatum = ?
+             SET Voornaam = ?,
+                 Tussenvoegsel = ?,
+                 Achternaam = ?,
+                 Gebruikersnaam = ?,
+                 Actief = ?,
+                 Geslaagd = ?,
+                 Adres = ?,
+                 Ophaaladres = ?,
+                 Email = ?,
+                 Telefoon = ?,
+                 RegistratieDatum = ?
              WHERE Gebruiker_id = ?"
         );
+
+        $registratieDatum = $data['registratiedatum'] ?? date('Y-m-d');
 
         return $stmt->execute([
             $data['voornaam'],
@@ -152,40 +165,45 @@ class Gebruiker
             $data['ophaaladres'] ?? '',
             $data['email'] ?? '',
             $data['telefoon'] ?? '',
-            $data['registratiedatum'] ?? date('Y-m-d'),
-            $data['geboortedatum'] ?: null,
+            $registratieDatum,
             $id,
         ]);
     }
 
-    // Alleen wachtwoord wijzigen
+    // 9. Alleen wachtwoord aanpassen
     public function wachtwoordBijwerken(int $id, string $nieuwWachtwoord): bool
     {
         $stmt = $this->pdo->prepare(
-            "UPDATE gebruiker SET Wachtwoord = ? WHERE Gebruiker_id = ?"
+            "UPDATE gebruiker
+             SET Wachtwoord = ?
+             WHERE Gebruiker_id = ?"
         );
+
         return $stmt->execute([
             password_hash($nieuwWachtwoord, PASSWORD_DEFAULT),
             $id,
         ]);
     }
 
-    // Gebruiker actief of inactief zetten
+    // 10. Actief / inactief zetten
     public function setActief(int $id, int $actief): bool
     {
         $stmt = $this->pdo->prepare(
-            "UPDATE gebruiker SET Actief = ? WHERE Gebruiker_id = ?"
+            "UPDATE gebruiker
+             SET Actief = ?
+             WHERE Gebruiker_id = ?"
         );
+
         return $stmt->execute([$actief, $id]);
     }
 
-    // Soft delete = inactief zetten
+    // 11. “Verwijderen” = inactief zetten
     public function verwijderen(int $id): bool
     {
         return $this->setActief($id, 0);
     }
 
-    // Volledige naam als string
+    // 12. Volledige naam opbouwen
     public function getVolleNaam(array $gebruiker): string
     {
         return trim(
