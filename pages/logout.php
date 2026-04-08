@@ -1,5 +1,13 @@
 <?php
 
+
+/*
+Naam: Adrian
+Versie: 1.1
+Datum: 08-04-2026
+Beschrijving: Simple Logout flow.
+*/
+
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 
