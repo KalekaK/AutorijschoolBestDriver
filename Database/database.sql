@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Gegenereerd op: 27 mei 2024 om 14:55
--- Serverversie: 8.3.0
--- PHP-versie: 8.1.2-1ubuntu2.17
+-- Host: 127.0.0.1
+-- Generation Time: Apr 08, 2026 at 09:48 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,252 +18,252 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `rijschool`
+-- Database: `autorijschoolbestdriver`
 --
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Auto`
+-- Table structure for table `auto`
 --
 
-CREATE TABLE `Auto` (
-  `Auto_id` int NOT NULL,
+CREATE TABLE `auto` (
+  `Auto_id` int(10) NOT NULL,
   `Merk` varchar(255) NOT NULL,
   `Model` varchar(255) NOT NULL,
   `Kenteken` varchar(255) NOT NULL,
-  `SoortSoort_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `SoortSoort_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Gebruiker`
+-- Table structure for table `gebruiker`
 --
 
-CREATE TABLE `Gebruiker` (
-  `Gebruiker_id` int NOT NULL,
+CREATE TABLE `gebruiker` (
+  `Gebruiker_id` int(10) NOT NULL,
   `Gebruikersnaam` varchar(255) NOT NULL,
   `Wachtwoord` varchar(255) NOT NULL,
   `Voornaam` varchar(255) NOT NULL,
   `Tussenvoegsel` varchar(255) NOT NULL,
   `Achternaam` varchar(255) NOT NULL,
-  `Rol` int NOT NULL,
+  `Rol` int(1) NOT NULL,
   `Examenformatie` text NOT NULL,
-  `Actief` int NOT NULL,
-  `Geslaagd` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Actief` int(1) NOT NULL,
+  `Geslaagd` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Gebruiker_Lespakket`
+-- Table structure for table `gebruiker_lespakket`
 --
 
-CREATE TABLE `Gebruiker_Lespakket` (
-  `Gebruiker_Lespakket_id` int NOT NULL,
-  `GebruikerGebruiker_id` int NOT NULL,
-  `LespakketLespakket_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `gebruiker_lespakket` (
+  `Gebruiker_Lespakket_id` int(10) NOT NULL,
+  `GebruikerGebruiker_id` int(10) NOT NULL,
+  `LespakketLespakket_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Les`
+-- Table structure for table `les`
 --
 
-CREATE TABLE `Les` (
-  `Les_id` int NOT NULL,
+CREATE TABLE `les` (
+  `Les_id` int(10) NOT NULL,
   `Lestijd` datetime NOT NULL,
-  `OphaallocatieOphaallocatie_id` int NOT NULL,
-  `Instructeur_id` int NOT NULL,
+  `OphaallocatieOphaallocatie_id` int(10) NOT NULL,
+  `Instructeur_id` int(10) NOT NULL,
   `Doel` text NOT NULL,
   `Opmerking_student` text NOT NULL,
   `Opmerking_instructeur` text NOT NULL,
-  `Lespakket_id` int NOT NULL,
-  `Geannuleerd` int NOT NULL,
+  `Lespakket_id` int(10) NOT NULL,
+  `Geannuleerd` int(1) NOT NULL,
   `RedenAnnuleren` text NOT NULL,
-  `AutoAuto_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `AutoAuto_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Lespakket`
+-- Table structure for table `lespakket`
 --
 
-CREATE TABLE `Lespakket` (
-  `Lespakket_id` int NOT NULL,
-  `Naam` varchar(255) NOT NULL,
+CREATE TABLE `lespakket` (
+  `Lespakket_id` int(10) NOT NULL,
+  `Naam` varchar(100) NOT NULL,
   `Omschrijving` text NOT NULL,
-  `Aantal` int NOT NULL,
+  `Aantal` int(3) NOT NULL,
   `Prijs` decimal(15,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Les_Onderwerp`
+-- Table structure for table `les_onderwerp`
 --
 
-CREATE TABLE `Les_Onderwerp` (
-  `LesLes_id` int NOT NULL,
-  `OnderwerpOnderwerp_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `les_onderwerp` (
+  `LesLes_id` int(10) NOT NULL,
+  `OnderwerpOnderwerp_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Onderwerp`
+-- Table structure for table `onderwerp`
 --
 
-CREATE TABLE `Onderwerp` (
-  `Onderwerp_id` int NOT NULL,
+CREATE TABLE `onderwerp` (
+  `Onderwerp_id` int(10) NOT NULL,
   `Onderwerp` varchar(255) NOT NULL,
   `Omschrijving` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Ophaallocatie`
+-- Table structure for table `ophaallocatie`
 --
 
-CREATE TABLE `Ophaallocatie` (
-  `Ophaallocatie_id` int NOT NULL,
+CREATE TABLE `ophaallocatie` (
+  `Ophaallocatie_id` int(10) NOT NULL,
   `Adres` varchar(255) NOT NULL,
-  `Postcode` varchar(8) NOT NULL,
+  `Postcode` varchar(6) NOT NULL,
   `Plaats` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Soort`
+-- Table structure for table `soort`
 --
 
-CREATE TABLE `Soort` (
-  `Soort_id` int NOT NULL,
+CREATE TABLE `soort` (
+  `Soort_id` int(10) NOT NULL,
   `Type` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Ziekmelding`
+-- Table structure for table `ziekmelding`
 --
 
-CREATE TABLE `Ziekmelding` (
-  `Ziekmelding_id` int NOT NULL,
+CREATE TABLE `ziekmelding` (
+  `Ziekmelding_id` int(10) NOT NULL,
   `Van` date NOT NULL,
   `Tot` date NOT NULL,
   `Toelichting` text NOT NULL,
-  `GebruikerGebruiker_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `GebruikerGebruiker_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexen voor geÃ«xporteerde tabellen
+-- Indexes for dumped tables
 --
 
 --
--- Indexen voor tabel `Auto`
+-- Indexes for table `auto`
 --
-ALTER TABLE `Auto`
+ALTER TABLE `auto`
   ADD PRIMARY KEY (`Auto_id`);
 
 --
--- Indexen voor tabel `Gebruiker`
+-- Indexes for table `gebruiker`
 --
-ALTER TABLE `Gebruiker`
+ALTER TABLE `gebruiker`
   ADD PRIMARY KEY (`Gebruiker_id`);
 
 --
--- Indexen voor tabel `Gebruiker_Lespakket`
+-- Indexes for table `gebruiker_lespakket`
 --
-ALTER TABLE `Gebruiker_Lespakket`
+ALTER TABLE `gebruiker_lespakket`
   ADD PRIMARY KEY (`Gebruiker_Lespakket_id`);
 
 --
--- Indexen voor tabel `Les`
+-- Indexes for table `les`
 --
-ALTER TABLE `Les`
+ALTER TABLE `les`
   ADD PRIMARY KEY (`Les_id`);
 
 --
--- Indexen voor tabel `Lespakket`
+-- Indexes for table `lespakket`
 --
-ALTER TABLE `Lespakket`
+ALTER TABLE `lespakket`
   ADD PRIMARY KEY (`Lespakket_id`);
 
 --
--- Indexen voor tabel `Onderwerp`
+-- Indexes for table `onderwerp`
 --
-ALTER TABLE `Onderwerp`
+ALTER TABLE `onderwerp`
   ADD PRIMARY KEY (`Onderwerp_id`);
 
 --
--- Indexen voor tabel `Ophaallocatie`
+-- Indexes for table `ophaallocatie`
 --
-ALTER TABLE `Ophaallocatie`
+ALTER TABLE `ophaallocatie`
   ADD PRIMARY KEY (`Ophaallocatie_id`);
 
 --
--- Indexen voor tabel `Soort`
+-- Indexes for table `soort`
 --
-ALTER TABLE `Soort`
+ALTER TABLE `soort`
   ADD PRIMARY KEY (`Soort_id`);
 
 --
--- AUTO_INCREMENT voor geÃ«xporteerde tabellen
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT voor een tabel `Auto`
+-- AUTO_INCREMENT for table `auto`
 --
-ALTER TABLE `Auto`
-  MODIFY `Auto_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `auto`
+  MODIFY `Auto_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Gebruiker`
+-- AUTO_INCREMENT for table `gebruiker`
 --
-ALTER TABLE `Gebruiker`
-  MODIFY `Gebruiker_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `gebruiker`
+  MODIFY `Gebruiker_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Gebruiker_Lespakket`
+-- AUTO_INCREMENT for table `gebruiker_lespakket`
 --
-ALTER TABLE `Gebruiker_Lespakket`
-  MODIFY `Gebruiker_Lespakket_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `gebruiker_lespakket`
+  MODIFY `Gebruiker_Lespakket_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Les`
+-- AUTO_INCREMENT for table `les`
 --
-ALTER TABLE `Les`
-  MODIFY `Les_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `les`
+  MODIFY `Les_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Lespakket`
+-- AUTO_INCREMENT for table `lespakket`
 --
-ALTER TABLE `Lespakket`
-  MODIFY `Lespakket_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `lespakket`
+  MODIFY `Lespakket_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Onderwerp`
+-- AUTO_INCREMENT for table `onderwerp`
 --
-ALTER TABLE `Onderwerp`
-  MODIFY `Onderwerp_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `onderwerp`
+  MODIFY `Onderwerp_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Ophaallocatie`
+-- AUTO_INCREMENT for table `ophaallocatie`
 --
-ALTER TABLE `Ophaallocatie`
-  MODIFY `Ophaallocatie_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `ophaallocatie`
+  MODIFY `Ophaallocatie_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Soort`
+-- AUTO_INCREMENT for table `soort`
 --
-ALTER TABLE `Soort`
-  MODIFY `Soort_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `soort`
+  MODIFY `Soort_id` int(10) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
