@@ -194,12 +194,14 @@ include __DIR__ . '/../../includes/header.php';
 							<th>Instructeur</th>
 							<th>Klant</th>
 							<th>Ophaal plek</th>
+							<th>Auto</th>
+							<th>Doel</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 					<?php if (empty($lessen)): ?>
-						<tr><td colspan="7" class="text-center text-muted py-4">Geen lessen gevonden.</td></tr>
+						<tr><td colspan="9" class="text-center text-muted py-4">Geen lessen gevonden.</td></tr>
 					<?php else: ?>
 						<?php foreach ($lessen as $l): ?>
 						<tr>
@@ -209,9 +211,16 @@ include __DIR__ . '/../../includes/header.php';
 							<td><?= htmlspecialchars($l['instructeur_naam'] ?? '') ?></td>
 							<td><?= htmlspecialchars($l['klant_naam'] ?? '') ?></td>
 							<td><?= htmlspecialchars($l['ophaallocatie'] ?? '') ?></td>
+							<td><?= htmlspecialchars((string)($l['auto'] ?? '')) ?></td>
+							<td><?= htmlspecialchars((string)($l['Doel'] ?? '')) ?></td>
 							<td class="text-end">
 								<?php if ((int)$l['Geannuleerd'] !== 1): ?>
-									<button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#annuleerModal<?= (int)$l['Les_id'] ?>">
+									<button
+										class="btn btn-sm btn-outline-danger"
+										data-bs-toggle="modal"
+										data-bs-target="#annuleerModal"
+										data-annuleer-les-id="<?= (int)$l['Les_id'] ?>"
+									>
 										Annuleren
 									</button>
 								<?php else: ?>
@@ -219,29 +228,6 @@ include __DIR__ . '/../../includes/header.php';
 								<?php endif; ?>
 							</td>
 						</tr>
-
-						<?php if ((int)$l['Geannuleerd'] !== 1): ?>
-						<div class="modal fade" id="annuleerModal<?= (int)$l['Les_id'] ?>" tabindex="-1">
-							<div class="modal-dialog">
-								<form method="POST" class="modal-content">
-									<input type="hidden" name="actie" value="annuleren">
-									<input type="hidden" name="les_id" value="<?= (int)$l['Les_id'] ?>">
-									<div class="modal-header">
-										<h5 class="modal-title">Les annuleren</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-									</div>
-									<div class="modal-body">
-										<label class="form-label">Reden *</label>
-										<textarea name="reden" class="form-control" rows="3" required></textarea>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-										<button type="submit" class="btn btn-danger">Bevestigen</button>
-									</div>
-								</form>
-							</div>
-						</div>
-						<?php endif; ?>
 
 						<?php endforeach; ?>
 					<?php endif; ?>
@@ -253,6 +239,27 @@ include __DIR__ . '/../../includes/header.php';
 	</div>
 </main>
 </div>
+</div>
+
+<div class="modal fade" id="annuleerModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<form method="POST" class="modal-content" id="annuleerForm">
+			<input type="hidden" name="actie" value="annuleren">
+			<input type="hidden" name="les_id" id="annuleer_les_id" value="">
+			<div class="modal-header">
+				<h5 class="modal-title">Les annuleren</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sluiten"></button>
+			</div>
+			<div class="modal-body">
+				<label class="form-label">Reden *</label>
+				<textarea name="reden" id="annuleer_reden" class="form-control" rows="3" required></textarea>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+				<button type="submit" class="btn btn-danger">Bevestigen</button>
+			</div>
+		</form>
+	</div>
 </div>
 
 <div class="modal fade" id="lesModal" tabindex="-1">
@@ -357,6 +364,23 @@ include __DIR__ . '/../../includes/header.php';
 		if(lestijd === '' || klant === '' || instructeur === '' || auto === '' || lespakket === '' || ophaal === ''){
 			alert('Vul alle verplichte velden in.');
 			e.preventDefault();
+		}
+	});
+})();
+
+(function(){
+	var modal = document.getElementById('annuleerModal');
+	var lesIdInput = document.getElementById('annuleer_les_id');
+	var redenInput = document.getElementById('annuleer_reden');
+	if(!modal || !lesIdInput) return;
+
+	document.addEventListener('click', function(e){
+		var btn = e.target.closest('[data-annuleer-les-id]');
+		if(!btn) return;
+		lesIdInput.value = btn.getAttribute('data-annuleer-les-id') || '';
+		if(redenInput) {
+			redenInput.value = '';
+			setTimeout(function(){ redenInput.focus(); }, 150);
 		}
 	});
 })();

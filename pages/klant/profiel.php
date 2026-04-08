@@ -2,7 +2,7 @@
 <?php
 /*
 Naam: Krishna Sardarsing
-Versie: 1.3
+Versie: 1.2
 Datum: 08-04-2026
 Beschrijving: Klant profiel bekijken en wachtwoord aanpassen.
 */
