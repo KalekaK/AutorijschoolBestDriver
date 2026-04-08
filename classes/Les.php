@@ -1,7 +1,7 @@
 <?php
 /*
 Naam: Krishna Sardarsing
-Versie: 1.1
+Versie: 1.3
 Datum: 08-04-2026
 Beschrijving: Simpele class voor lessen (overzichten en plannen).
 */
