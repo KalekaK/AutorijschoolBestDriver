@@ -1,6 +1,8 @@
 <?php
+
+
 /*
-Naam: Dominik Bulla
+Naam: Adrian.
 Versie: 1.0
 Datum: 08-04-2026
 Beschrijving: Algemene header met basis HTML, Bootstrap en navigatie.
