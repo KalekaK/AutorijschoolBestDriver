@@ -14,6 +14,7 @@ require_once __DIR__ . '/../../classes/Les.php';
 require_once __DIR__ . '/../../includes/auth.php';
 
 Auth::requireRol(3);
+
 // lessen ophalen van de ingelogde klant
 $model = new Les();
 $lessen = $model->getByKlant(Auth::getGebruikerId());
@@ -36,7 +37,8 @@ include __DIR__ . '/../../includes/header.php';
 				</tr>
 			</thead>
 			<tbody>
-            <!-- als er geen lessen zijn, tonen we een melding. anders tonen we de lessen in een tabel -->
+
+<!-- als er geen lessen zijn, tonen we een melding. anders tonen we de lessen in een tabel -->
 			<?php if (empty($lessen)): ?>
 				<tr><td colspan="6" class="text-center text-muted py-4">Geen lessen gevonden.</td></tr>
 			<?php else: foreach ($lessen as $l): ?>

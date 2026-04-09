@@ -5,12 +5,14 @@ Versie: 1.5
 Datum: 08-04-2026
 Beschrijving: Simpele class voor lessen (overzichten en plannen).
 */
+
 class Les {
     private PDO $pdo;
 
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
+
 // alle lessen ophalen, met zoekfunctie
     public function getAll(string $zoek = ''): array {
         $sql = "SELECT l.*,
@@ -28,6 +30,7 @@ class Les {
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
+
 // lessen ophalen op basis van lespakket type, instructeur of klant
     public function getByLespakketType(int $lespakketTypeId): array {
         $stmt = $this->pdo->prepare(
@@ -86,6 +89,7 @@ class Les {
         $stmt->execute([$klantId]);
         return $stmt->fetchAll();
     }
+
 //hier gebruiken we een private functie die eerst kijkt of er al een gebruiker_lespakket bestaat.
         $stmt = $this->pdo->prepare(
             "SELECT Gebruiker_Lespakket_id
@@ -109,6 +113,7 @@ class Les {
 
         return (int)$this->pdo->lastInsertId();
     }
+
 // les toevoegen, annuleren en verwijderen
     public function toevoegen(array $data): bool {
         $klantId = (int)($data['klant_id'] ?? 0);
@@ -149,7 +154,8 @@ class Les {
         return $stmt->execute([$reden, $lesId]);
     }
 
-    public function verwijderen(int $lesId): bool {
+    public function verwijderen(int $lesId): bool { 
         $stmt = $this->pdo->prepare("DELETE FROM les WHERE Les_id = ?");
         return $stmt->execute([$lesId]);
     }
+ 

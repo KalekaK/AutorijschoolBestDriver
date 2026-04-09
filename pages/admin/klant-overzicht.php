@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['actie'] ?? '') === 'toggle
     header('Location: klant-overzicht.php?melding=opgeslagen');
     exit;
 }
+
 // zoekterm ophalen en klantenlijst opvragen
 $zoek    = trim($_GET['zoek']??'');
 $klanten = $model->getAlleKlanten($zoek);
@@ -41,6 +42,7 @@ include __DIR__.'/../../includes/header.php';
     <li><a href="<?= BASE_URL ?>/pages/admin/ziekmelding.php" class="nav-link">Ziekmeldingen</a></li>
   </ul>
 </nav>
+
 <!-- main content van de pagina, hierin komt het overzicht van klanten en de zoekfunctie -->
 <main class="col main-content">
   <?php if (($_GET['melding'] ?? '') === 'opgeslagen'): ?>
@@ -55,6 +57,7 @@ include __DIR__.'/../../includes/header.php';
       <input type="text" name="zoek" class="form-control" placeholder="Naam zoeken..." value="<?= htmlspecialchars($zoek) ?>">
     </div>
   </form>
+
   <div class="bg-white rounded border">
     <table class="table table-hover table-bestdriver mb-0">
       <thead>
@@ -72,6 +75,7 @@ include __DIR__.'/../../includes/header.php';
         </tr>
       </thead>
       <tbody>
+
       <!-- als er geen klanten zijn, tonen we een melding. anders tonen we de klanten in een tabel -->
       <?php if(empty($klanten)): ?>
         <tr><td colspan="10" class="text-center text-muted py-4">Geen klanten gevonden.</td></tr>
@@ -89,6 +93,7 @@ include __DIR__.'/../../includes/header.php';
               echo $reg !== '' ? htmlspecialchars(date('d-m-Y', strtotime($reg))) : '';
             ?>
           </td>
+          
           <!-- we tonen een badge groen als de klant actief is, anders grijs. en een badge groen als de klant geslaagd is, anders geel -->
           <td><?= $k['Actief'] ? '<span class="badge bg-success">Ja</span>' : '<span class="badge bg-secondary">Nee</span>' ?></td>
           <td><?= $k['Geslaagd'] ? '<span class="badge bg-success">Ja</span>' : '<span class="badge bg-warning text-dark">Nee</span>' ?></td>

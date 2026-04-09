@@ -12,6 +12,7 @@ class Auto {
     public function __construct() { 
         $this->pdo = Database::getInstance(); 
     }
+
 // autos ophalen en zoeken
     public function getAll(string $zoek = ''): array { 
         if ($zoek !== '') { 
@@ -34,6 +35,7 @@ class Auto {
         );
         return $stmt->fetchAll();
     }
+
 // auto ophalen op id
     public function getById(int $id): array|false {
         $stmt = $this->pdo->prepare(
@@ -45,11 +47,13 @@ class Auto {
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
 // alle soorten auto's ophalen
     public function getSoorten(): array {
         $stmt = $this->pdo->query("SELECT * FROM soort ORDER BY Type");
         return $stmt->fetchAll();
     }
+    
 // auto toevoegen, bijwerken en verwijderen
     public function toevoegen(array $data): bool {
         $merk = trim($data['merk'] ?? '');

@@ -20,6 +20,7 @@ $gebruiker = $model->getById(Auth::getGebruikerId());
 
 $errors = [];
 $melding = '';
+
 // als er een POST request is gedaan, verwerken we het formulier voor wachtwoord aanpassen
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$huidig = $_POST['huidig_wachtwoord'] ?? '';
@@ -56,9 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include __DIR__ . '/../../includes/header.php';
 ?>
+
+<!-- hier tonen we de persoonlijke gegevens van de klant en een formulier om het wachtwoord aan te passen -->
 <div class="container main-content">
 	<h5 class="mb-4">Mijn profiel</h5>
-<!-- hier tonen we de persoonlijke gegevens van de klant en een formulier om het wachtwoord aan te passen -->
 	<?php if ($melding === 'opgeslagen'): ?>
 		<div class="alert alert-success">Wachtwoord aangepast.</div>
 	<?php endif; ?>
