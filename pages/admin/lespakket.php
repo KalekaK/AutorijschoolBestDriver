@@ -5,13 +5,14 @@ Versie: 1.1
 Datum: 08-04-2026
 Beschrijving: Admin lespakketten (CRUD eenvoudig).
 */
- 
+ // Vereiste bestanden en initialisatie
 $pageTitle = 'Lespakketten';
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/Lespakket.php';
 require_once __DIR__ . '/../../includes/auth.php';
  
+// Alleen toegankelijk voor admins (rol 1)
 Auth::requireRol(1);
  
 $lespakketModel = new Lespakket();
@@ -31,10 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['actie'] ?? '') === 'toevoe
     exit;
 }
  
+// Zoekterm verwerken en pakketten ophalen
 $zoek      = trim($_GET['zoek'] ?? '');
 $pakketten = $lespakketModel->getAll($zoek);
 include __DIR__ . '/../../includes/header.php';
 ?>
+<!-- Sidebar en main content -->
 <div class="container-fluid">
 <div class="row">
 <nav class="col-auto sidebar pt-3">
@@ -63,6 +66,7 @@ include __DIR__ . '/../../includes/header.php';
         </div>
     </form>
  
+    <!-- Tabel met lespakketten -->
     <div class="bg-white rounded border">
         <table class="table table-hover table-bestdriver mb-0">
             <thead>
@@ -74,6 +78,7 @@ include __DIR__ . '/../../includes/header.php';
                 </tr>
             </thead>
             <tbody>
+            <!-- Pakketten weergeven -->
             <?php if (empty($pakketten)): ?>
                 <tr><td colspan="4" class="text-center text-muted py-4">Geen pakketten gevonden.</td></tr>
             <?php else: ?>
@@ -99,8 +104,8 @@ include __DIR__ . '/../../includes/header.php';
 </main>
 </div>
 </div>
- 
-<!-- Modal toevoegen -->
+
+ <!-- Lespakket toevoegen -->
 <div class="modal fade" id="pakketModal" tabindex="-1">
     <div class="modal-dialog">
         <form method="POST">
