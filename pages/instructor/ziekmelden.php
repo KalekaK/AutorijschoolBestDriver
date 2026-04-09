@@ -11,7 +11,7 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/Ziekmelding.php';
 require_once __DIR__ . '/../../includes/auth.php';
-
+//Alleen admin mag alle ziekmeldingen bekijken//
 Auth::requireRol(1);
 
 $model = new Ziekmelding();
@@ -47,6 +47,7 @@ include __DIR__ . '/../../includes/header.php';
                 </tr>
             </thead>
             <tbody>
+                //Controleer of er ziekmeldingen zijn//
             <?php if (empty($ziekmeldingen)): ?>
                 <tr><td colspan="4" class="text-center text-muted py-4">Geen ziekmeldingen.</td></tr>
             <?php else: foreach ($ziekmeldingen as $z): ?>

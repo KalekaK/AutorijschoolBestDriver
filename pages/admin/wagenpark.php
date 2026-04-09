@@ -12,7 +12,7 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/Auto.php';
 require_once __DIR__ . '/../../includes/auth.php';
-
+//Verwerk formulier voor auto's toevoegen of bewerken//
 Auth::requireRol(1);
 
 $model = new Auto();
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 		$errors[] = 'Auto bewerken is mislukt. Controleer de velden.';
 	}
-
+	//Verwijder auto uit het wagenpark//
 	if ($actie === 'verwijderen') {
 		$id = (int)($_POST['id'] ?? 0);
 		if ($id > 0) {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		exit;
 	}
 }
-
+//Haal auto's en zoekgegevens op//
 $zoek = trim($_GET['zoek'] ?? '');
 $autos = $model->getAll($zoek);
 $soorten = $model->getSoorten();
@@ -84,7 +84,7 @@ include __DIR__ . '/../../includes/header.php';
 	<?php if ($melding === 'opgeslagen'): ?>
 		<div class="alert alert-success">Opgeslagen.</div>
 	<?php endif; ?>
-
+		//Toon foutmeldingen als die er zijn//
 	<?php if (!empty($errors)): ?>
 		<div class="alert alert-danger">
 			<div class="fw-semibold mb-1">Controleer het formulier</div>
@@ -115,6 +115,7 @@ include __DIR__ . '/../../includes/header.php';
 				</tr>
 			</thead>
 			<tbody>
+				//Toon auto's of melding als er geen zijn//
 			<?php if (empty($autos)): ?>
 				<tr><td colspan="6" class="text-center text-muted py-4">Geen auto’s gevonden.</td></tr>
 			<?php else: foreach ($autos as $a): ?>
@@ -233,6 +234,7 @@ include __DIR__ . '/../../includes/header.php';
 </div>
 
 <script>
+	//Controleer formulier bij toevoegen van auto //
 (function(){
 	var form = document.getElementById('autoForm');
 	if(!form) return;
@@ -245,7 +247,7 @@ include __DIR__ . '/../../includes/header.php';
 		}
 	});
 })();
-
+//Vul bewerkformulier automatisch in//
 (function(){
 	var idInput = document.getElementById('auto_bewerken_id');
 	var kentekenInput = document.getElementById('auto_bewerken_kenteken');
