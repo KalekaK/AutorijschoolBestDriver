@@ -36,7 +36,7 @@ include __DIR__ . '/../../includes/header.php';
 				</tr>
 			</thead>
 			<tbody>
-				//Toon lessen of melding als er geen lessen zijn//
+				<!--Toon lessen of melding als er geen lessen zijn-->
 			<?php if (empty($lessen)): ?>
 				<tr><td colspan="6" class="text-center text-muted py-4">Geen lessen gevonden.</td></tr>
 			<?php else: foreach ($lessen as $l): ?>
@@ -47,7 +47,7 @@ include __DIR__ . '/../../includes/header.php';
 					<td><?= htmlspecialchars($l['ophaallocatie'] ?? '') ?></td>
 					<td><?= htmlspecialchars($l['lespakket_naam'] ?? '') ?></td>
 					<td>
-						//Toon status van de les //
+						<!--Toon status van de les -->
 						<?php if ((int)$l['Geannuleerd'] === 1): ?>
 							<span class="badge bg-secondary">Geannuleerd</span>
 						<?php else: ?>
