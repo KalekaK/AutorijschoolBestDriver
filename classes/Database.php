@@ -8,6 +8,7 @@ Beschrijving: Database class die zorgt voor een singleton PDO verbinding. Hierme
 class Database {
     // Singleton instantie van PDO
     private static ?PDO $instance = null;
+    private function __construct() {} // voorkomen dat er meerdere instanties worden gemaakt
 
     // connectie maken met de database met behulp van dsn en configuratiegegevens
     public static function getInstance(): PDO { 
