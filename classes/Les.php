@@ -159,4 +159,4 @@ class Les {
         $stmt = $this->pdo->prepare("DELETE FROM les WHERE Les_id = ?");
         return $stmt->execute([$lesId]);
     }
- 
+}
