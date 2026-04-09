@@ -91,6 +91,7 @@ class Les {
     }
 
 //hier gebruiken we een private functie die eerst kijkt of er al een gebruiker_lespakket bestaat.
+    private function getOfMaakGebruikerLespakketId(int $klantId, int $lespakketTypeId): int {
         $stmt = $this->pdo->prepare(
             "SELECT Gebruiker_Lespakket_id
              FROM gebruiker_lespakket
