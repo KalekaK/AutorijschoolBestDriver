@@ -7,17 +7,20 @@ Beschrijving: Simpele class om lespakketten te beheren.
 */
 
 class Lespakket {
+    // PDO instantie voor databaseverbinding
     private PDO $pdo;
 
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
 
+    // Alle lespakketten ophalen, optioneel filteren op zoekterm
     public function getAll(string $zoek = ''): array {
         if ($zoek !== '') {
             $stmt = $this->pdo->prepare(
                 "SELECT * FROM lespakket WHERE Naam LIKE ? OR Omschrijving LIKE ? ORDER BY Naam"
             );
+            // Zoekterm gebruiken in de query met wildcard voor gedeeltelijke matches
             $stmt->execute(["%$zoek%", "%$zoek%"]);
             return $stmt->fetchAll();
         }
@@ -25,7 +28,7 @@ class Lespakket {
         $stmt = $this->pdo->query("SELECT * FROM lespakket ORDER BY Naam");
         return $stmt->fetchAll();
     }
-
+    // Alle lespakketten ophalen met het aantal ingeschreven gebruikers, optioneel filteren op zoekterm
     public function getAllMetInschrijvingen(string $zoek = ''): array {
         if ($zoek !== '') {
             $stmt = $this->pdo->prepare(
@@ -40,6 +43,7 @@ class Lespakket {
             return $stmt->fetchAll();
         }
 
+        // Alle lespakketten ophalen met het aantal ingeschreven gebruikers
         $stmt = $this->pdo->query(
             "SELECT lp.*, COUNT(DISTINCT glp.GebruikerGebruiker_id) AS aantal_ingeschreven
              FROM lespakket lp
@@ -50,12 +54,14 @@ class Lespakket {
         return $stmt->fetchAll();
     }
 
+    // Lespakket ophalen op ID
     public function getById(int $id): array|false {
         $stmt = $this->pdo->prepare("SELECT * FROM lespakket WHERE Lespakket_id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
 
+    // Lespakket toevoegen aan de database
     public function toevoegen(array $data): bool {
         $naam = trim($data['naam'] ?? '');
         $omschrijving = trim($data['omschrijving'] ?? '');
@@ -72,6 +78,7 @@ class Lespakket {
         return $stmt->execute([$naam, $omschrijving, $aantal, $prijs]);
     }
 
+    // Lespakket bijwerken in de database
     public function bijwerken(int $id, array $data): bool {
         $naam = trim($data['naam'] ?? '');
         $omschrijving = trim($data['omschrijving'] ?? '');
@@ -88,6 +95,7 @@ class Lespakket {
         return $stmt->execute([$naam, $omschrijving, $aantal, $prijs, $id]);
     }
 
+    // Lespakket verwijderen uit de database
     public function verwijderen(int $id): bool {
         $stmt = $this->pdo->prepare("DELETE FROM lespakket WHERE Lespakket_id = ?");
         return $stmt->execute([$id]);

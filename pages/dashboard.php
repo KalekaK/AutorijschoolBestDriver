@@ -1,17 +1,27 @@
 <?php
+/*
+Naam: Dominik Bulla
+Versie: 1.0
+Datum: 08-04-2026 / 09-04-2026
+Beschrijving: Hoofd dashboard pagina die gebruikers na inloggen zien. Toont verschillende opties afhankelijk van de rol (admin, instructeur, klant). Admins krijgen een overzicht met links naar alle beheerpagina's, instructeurs zien hun lesoverzicht en ziekmeldingen, klanten zien hun lessen en profiel.
+*/
 $pageTitle = 'Dashboard';
+// Vereiste bestanden includen
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Gebruiker.php';
 require_once __DIR__ . '/../includes/auth.php';
 
+// Alleen toegankelijk voor ingelogde gebruikers
 Auth::requireLogin();
+// Rol ophalen voor gepersonaliseerde dashboard
 $rol = Auth::getRol();
 include __DIR__ . '/../includes/header.php';
 ?>
 <div class="container-fluid">
 <div class="row">
 
+<!-- Sidebars per rol, dus admin, instructeur en klant hebben verschillende opties -->
 <?php if ($rol === 1): ?>
 <nav class="col-auto sidebar pt-3">
     <ul class="nav flex-column gap-1">
@@ -28,6 +38,7 @@ include __DIR__ . '/../includes/header.php';
 <main class="col main-content">
     <h5 class="mb-4">Welkom, <?= htmlspecialchars(Auth::getNaam()) ?>!</h5>
 
+    <!-- Admin dashboard -->
     <?php if ($rol === 1): ?>
     <div class="row g-3">
         <div class="col-md-3">
@@ -68,6 +79,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
+    <!-- Instructeur dashboard -->
     <?php elseif ($rol === 2): ?>
     <div class="row g-3">
         <div class="col-md-6">
@@ -86,6 +98,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
+    <!-- Klant dashboard -->
     <?php elseif ($rol === 3): ?>
     <div class="row g-3">
         <div class="col-md-6">
