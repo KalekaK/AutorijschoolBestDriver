@@ -2,7 +2,7 @@
 <?php
 /*
 Naam: Krishna Sardarsing
-Versie: 1.2
+Versie: 1.3
 Datum: 08-04-2026
 Beschrijving: Admin overzicht van alle lessen + les inplannen.
 */
@@ -28,7 +28,7 @@ $melding = '';
 $errors = [];
 
 $lespakketTypeId = (int)($_GET['lespakket_id'] ?? 0);
-
+// les toevoegen en annuleren
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['actie'] ?? '') === 'toevoegen') {
 	$lestijd = trim($_POST['lestijd'] ?? '');
 	$ophaallocatieId = (int)($_POST['ophaallocatie_id'] ?? 0);
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['actie'] ?? '') === 'annule
 if (($_GET['melding'] ?? '') === 'opgeslagen') {
 	$melding = 'opgeslagen';
 }
-
+// gegevens ophalen voor het overzicht
 $geselecteerdLespakket = false;
 $lessen = [];
 $lespakkettenOverzicht = [];
@@ -96,6 +96,7 @@ $ophaallocaties = $pdo->query("SELECT * FROM ophaallocatie ORDER BY Plaats, Adre
 
 include __DIR__ . '/../../includes/header.php';
 ?>
+<!-- sidebar van de admin pagina's, hierin staan links naar alle verschillende admin pagina's -->
 <div class="container-fluid">
 <div class="row">
 <nav class="col-auto sidebar pt-3">
@@ -160,6 +161,7 @@ include __DIR__ . '/../../includes/header.php';
 					</tr>
 				</thead>
 				<tbody>
+                <!-- als er geen lespakketten zijn, tonen we een melding. anders tonen we de lespakketten in een tabel -->
 				<?php if (empty($lespakkettenOverzicht)): ?>
 					<tr><td colspan="4" class="text-center text-muted py-4">Geen lespakketten gevonden.</td></tr>
 				<?php else: ?>
@@ -200,6 +202,7 @@ include __DIR__ . '/../../includes/header.php';
 						</tr>
 					</thead>
 					<tbody>
+                    <!-- als er geen lessen zijn, tonen we een melding. anders tonen we de lessen in een tabel -->
 					<?php if (empty($lessen)): ?>
 						<tr><td colspan="9" class="text-center text-muted py-4">Geen lessen gevonden.</td></tr>
 					<?php else: ?>
@@ -240,7 +243,7 @@ include __DIR__ . '/../../includes/header.php';
 </main>
 </div>
 </div>
-
+<!-- modals voor les annuleren en les inplannen -->
 <div class="modal fade" id="annuleerModal" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog">
 		<form method="POST" class="modal-content" id="annuleerForm">
@@ -352,7 +355,7 @@ include __DIR__ . '/../../includes/header.php';
 (function(){
 	var form = document.getElementById('lesForm');
 	if(!form) return;
-
+// eenvoudige validatie dat alle verplichte velden zijn ingevuld voordat het formulier wordt verzonden
 	form.addEventListener('submit', function(e){
 		var klant = form.querySelector('select[name="klant_id"]').value;
 		var instructeur = form.querySelector('select[name="instructeur_id"]').value;
@@ -367,7 +370,7 @@ include __DIR__ . '/../../includes/header.php';
 		}
 	});
 })();
-
+// script voor het vullen van de les annuleren modal met de juiste les id en reden
 (function(){
 	var modal = document.getElementById('annuleerModal');
 	var lesIdInput = document.getElementById('annuleer_les_id');

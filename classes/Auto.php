@@ -1,22 +1,22 @@
 <?php
 /*
 Naam: Krishna Sardarsing
-Versie: 1.2
+Versie: 1.4
 Datum: 08-04-2026
 Beschrijving: Simpele class om auto’s (wagenpark) te beheren.
 */
 
-class Auto {
-    private PDO $pdo;
-
-    public function __construct() {
-        $this->pdo = Database::getInstance();
+class Auto { 
+    private PDO $pdo; 
+// de constructor van de class hierin maken we verbinding met de database
+    public function __construct() { 
+        $this->pdo = Database::getInstance(); 
     }
-
-    public function getAll(string $zoek = ''): array {
-        if ($zoek !== '') {
-            $stmt = $this->pdo->prepare(
-                "SELECT a.*, s.Type AS soort
+// autos ophalen en zoeken
+    public function getAll(string $zoek = ''): array { 
+        if ($zoek !== '') { 
+            $stmt = $this->pdo->prepare( 
+                "SELECT a.*, s.Type AS soort 
                  FROM auto a
                  LEFT JOIN soort s ON s.Soort_id = a.SoortSoort_id
                  WHERE a.Kenteken LIKE ? OR a.Merk LIKE ? OR a.Model LIKE ?
@@ -34,7 +34,7 @@ class Auto {
         );
         return $stmt->fetchAll();
     }
-
+// auto ophalen op id
     public function getById(int $id): array|false {
         $stmt = $this->pdo->prepare(
             "SELECT a.*, s.Type AS soort
@@ -45,12 +45,12 @@ class Auto {
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
-
+// alle soorten auto's ophalen
     public function getSoorten(): array {
         $stmt = $this->pdo->query("SELECT * FROM soort ORDER BY Type");
         return $stmt->fetchAll();
     }
-
+// auto toevoegen, bijwerken en verwijderen
     public function toevoegen(array $data): bool {
         $merk = trim($data['merk'] ?? '');
         $model = trim($data['model'] ?? '');

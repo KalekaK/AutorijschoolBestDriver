@@ -1,18 +1,17 @@
 <?php
 /*
-Naam: Dominik Bulla
-Versie: 1.1
+Naam: Krishna Sardarsing
+Versie: 1.5
 Datum: 08-04-2026
 Beschrijving: Simpele class voor lessen (overzichten en plannen).
 */
-
 class Les {
     private PDO $pdo;
 
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
-
+// alle lessen ophalen, met zoekfunctie
     public function getAll(string $zoek = ''): array {
         $sql = "SELECT l.*,
             CONCAT(gi.Voornaam,' ',gi.Achternaam) AS instructeur_naam,
@@ -29,7 +28,7 @@ class Les {
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
-
+// lessen ophalen op basis van lespakket type, instructeur of klant
     public function getByLespakketType(int $lespakketTypeId): array {
         $stmt = $this->pdo->prepare(
             "SELECT l.*,
@@ -87,8 +86,7 @@ class Les {
         $stmt->execute([$klantId]);
         return $stmt->fetchAll();
     }
-
-    private function getOfMaakGebruikerLespakketId(int $klantId, int $lespakketTypeId): int {
+//hier gebruiken we een private functie die eerst kijkt of er al een gebruiker_lespakket bestaat.
         $stmt = $this->pdo->prepare(
             "SELECT Gebruiker_Lespakket_id
              FROM gebruiker_lespakket
@@ -111,7 +109,7 @@ class Les {
 
         return (int)$this->pdo->lastInsertId();
     }
-
+// les toevoegen, annuleren en verwijderen
     public function toevoegen(array $data): bool {
         $klantId = (int)($data['klant_id'] ?? 0);
         $lespakketTypeId = (int)($data['lespakket_id'] ?? 0);
@@ -155,4 +153,3 @@ class Les {
         $stmt = $this->pdo->prepare("DELETE FROM les WHERE Les_id = ?");
         return $stmt->execute([$lesId]);
     }
-}
