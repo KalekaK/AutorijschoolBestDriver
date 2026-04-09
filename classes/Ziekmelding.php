@@ -12,7 +12,7 @@ class Ziekmelding {
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
-
+     // hier wordt een ziekmelding toegevoegd aan de database // 
     public function toevoegen(int $gebruikerId, string $van, string $tot, string $toelichting): bool {
         $van = trim($van);
         $tot = trim($tot);
@@ -35,7 +35,7 @@ class Ziekmelding {
         );
         return $stmt->execute([$van, $tot, $toelichting, $gebruikerId]);
     }
-
+// haalt alle ziektemeldingen van een gebruiker op en geeft weer terug van een gebruiker//
     public function getByGebruiker(int $gebruikerId): array {
         $stmt = $this->pdo->prepare(
             "SELECT * FROM ziekmelding WHERE GebruikerGebruiker_id = ? ORDER BY Van DESC"
@@ -43,7 +43,7 @@ class Ziekmelding {
         $stmt->execute([$gebruikerId]);
         return $stmt->fetchAll();
     }
-
+    // haalt alle ziektemeldingen op uit de database en geeft weer terug met naam van de instructeur//
     public function getAll(): array {
         $stmt = $this->pdo->query(
             "SELECT z.*, CONCAT(g.Voornaam,' ',g.Achternaam) AS instructeur_naam
