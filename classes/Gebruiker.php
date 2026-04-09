@@ -4,7 +4,7 @@
 Naam: Adrian
 Versie: 1.1
 Datum: 08-04-2026
-Beschrijving: Gebruiker class voor klanten/instructeurs (CRUD en inloggen).
+Beschrijving: gebruiker class voor klanten/instructeurs (crud en inloggen).
 */
 
 class Gebruiker
@@ -13,10 +13,11 @@ class Gebruiker
 
     public function __construct()
     {
+        // één keer de database connectie ophalen
         $this->pdo = Database::getInstance();
     }
 
-    // 1. Eén gebruiker ophalen op ID
+    // 1. één gebruiker ophalen op id
     public function getById(int $id): array|false
     {
         $stmt = $this->pdo->prepare(
@@ -26,7 +27,7 @@ class Gebruiker
         return $stmt->fetch();
     }
 
-    // 2. Eén gebruiker ophalen op gebruikersnaam (alleen actieve)
+    // 2. één gebruiker ophalen op gebruikersnaam (alleen actieve)
     public function getByGebruikersnaam(string $gebruikersnaam): array|false
     {
         $stmt = $this->pdo->prepare(
@@ -37,17 +38,27 @@ class Gebruiker
         return $stmt->fetch();
     }
 
-    // 3. Bestaat deze gebruikersnaam al?
-    public function bestaatGebruikersnaam(string $gebruikersnaam): bool
+    // 3. check of een gebruikersnaam al bestaat
+    public function bestaatGebruikersnaam(string $gebruikersnaam, ?int $excludeId = null): bool
     {
-        $stmt = $this->pdo->prepare(
-            "SELECT COUNT(*) FROM gebruiker WHERE Gebruikersnaam = ?"
-        );
-        $stmt->execute([$gebruikersnaam]);
+        // optioneel een id uitsluiten (handig bij bewerken)
+        if ($excludeId !== null) {
+            $stmt = $this->pdo->prepare(
+                "SELECT COUNT(*) FROM gebruiker 
+                 WHERE Gebruikersnaam = ? AND Gebruiker_id <> ?"
+            );
+            $stmt->execute([$gebruikersnaam, $excludeId]);
+        } else {
+            $stmt = $this->pdo->prepare(
+                "SELECT COUNT(*) FROM gebruiker WHERE Gebruikersnaam = ?"
+            );
+            $stmt->execute([$gebruikersnaam]);
+        }
+
         return (int)$stmt->fetchColumn() > 0;
     }
 
-    // 4. Alle klanten (Rol = 3), optioneel zoeken op naam
+    // 4. alle klanten (rol = 3), optioneel zoekterm op naam
     public function getAlleKlanten(string $zoek = ''): array
     {
         if ($zoek !== '') {
@@ -69,7 +80,7 @@ class Gebruiker
         return $stmt->fetchAll();
     }
 
-    // 5. Alle instructeurs (Rol = 2), alleen actieve
+    // 5. alle actieve instructeurs (rol = 2)
     public function getAlleInstructeurs(): array
     {
         $stmt = $this->pdo->query(
@@ -80,7 +91,7 @@ class Gebruiker
         return $stmt->fetchAll();
     }
 
-    // 6. Instructeurs voor admin, met zoekfunctie
+    // 6. instructeurs voor admin, met zoekmogelijkheid
     public function getAlleInstructeursAdmin(string $zoek = ''): array
     {
         if ($zoek !== '') {
@@ -102,7 +113,7 @@ class Gebruiker
         return $stmt->fetchAll();
     }
 
-    // 7. Nieuwe gebruiker toevoegen
+    // 7. nieuwe gebruiker toevoegen
     public function toevoegen(array $data): bool
     {
         $stmt = $this->pdo->prepare(
@@ -113,6 +124,7 @@ class Gebruiker
              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
         );
 
+        // als er geen datum meegegeven is, vandaag gebruiken
         $registratieDatum = $data['registratiedatum'] ?? date('Y-m-d');
 
         return $stmt->execute([
@@ -133,7 +145,7 @@ class Gebruiker
         ]);
     }
 
-    // 8. Gebruiker bijwerken
+    // 8. bestaande gebruiker bijwerken
     public function bijwerken(int $id, array $data): bool
     {
         $stmt = $this->pdo->prepare(
@@ -152,6 +164,7 @@ class Gebruiker
              WHERE Gebruiker_id = ?"
         );
 
+        // zelfde truc met datum als bij toevoegen
         $registratieDatum = $data['registratiedatum'] ?? date('Y-m-d');
 
         return $stmt->execute([
@@ -170,7 +183,7 @@ class Gebruiker
         ]);
     }
 
-    // 9. Alleen wachtwoord aanpassen
+    // 9. alleen wachtwoord aanpassen
     public function wachtwoordBijwerken(int $id, string $nieuwWachtwoord): bool
     {
         $stmt = $this->pdo->prepare(
@@ -185,7 +198,7 @@ class Gebruiker
         ]);
     }
 
-    // 10. Actief / inactief zetten
+    // 10. actief / inactief zetten
     public function setActief(int $id, int $actief): bool
     {
         $stmt = $this->pdo->prepare(
@@ -197,13 +210,13 @@ class Gebruiker
         return $stmt->execute([$actief, $id]);
     }
 
-    // 11. “Verwijderen” = inactief zetten
+    // 11. “verwijderen” = inactief maken
     public function verwijderen(int $id): bool
     {
         return $this->setActief($id, 0);
     }
 
-    // 12. Volledige naam opbouwen
+    // 12. volledige naam opbouwen uit losse velden
     public function getVolleNaam(array $gebruiker): string
     {
         return trim(
